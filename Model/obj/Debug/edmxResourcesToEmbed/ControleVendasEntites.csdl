@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ControleVendasModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Cliente">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Pedido" Relationship="Self.FK_Pedido_Cliente" FromRole="Cliente" ToRole="Pedido" />
+  </EntityType>
+  <EntityType Name="ItensPedido">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PedidoId" Type="Int64" />
+    <Property Name="Situacao" Type="Byte" />
+    <Property Name="ProdutoId" Type="Int64" />
+    <Property Name="Quantidade" Type="Int32" />
+    <Property Name="ValorTotal" Type="Decimal" Precision="18" Scale="2" />
+    <NavigationProperty Name="Produto" Relationship="Self.FK_ItensPedido_Produto" FromRole="ItensPedido" ToRole="Produto" />
+  </EntityType>
+  <EntityType Name="Marca">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nome" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="PorcentagemComicao" Type="Decimal" Precision="18" Scale="2" />
+  </EntityType>
+  <EntityType Name="Pedido">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ClienteId" Type="Int64" />
+    <Property Name="Data" Type="DateTime" Precision="3" />
+    <Property Name="Valor" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Situacao" Type="Byte" />
+    <Property Name="NumeroParcela" Type="Byte" />
+    <Property Name="ValorTotalComicao" Type="Decimal" Precision="18" Scale="2" />
+    <NavigationProperty Name="Cliente" Relationship="Self.FK_Pedido_Cliente" FromRole="Pedido" ToRole="Cliente" />
+    <NavigationProperty Name="ItensPedido" Relationship="Self.FK_ItensPedido_Pedido" FromRole="Pedido" ToRole="ItensPedido" />
+  </EntityType>
+  <EntityType Name="Produto">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Descricao" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CodigoProduto" Type="Int32" />
+    <Property Name="MarcaId" Type="Int64" />
+    <Property Name="ValorProduto" Type="Decimal" Precision="18" Scale="2" />
+    <NavigationProperty Name="Marca" Relationship="Self.FK_Produto_Marca" FromRole="Produto" ToRole="Marca" />
+    <Property Name="Tipo" Type="Byte" />
+    <Property Name="Estoque" Type="Int32" />
+    <Property Name="ValorCompra" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Observacao" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Imagem" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <Association Name="FK_Pedido_Cliente">
+    <End Role="Cliente" Type="Self.Cliente" Multiplicity="0..1" />
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cliente">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Pedido">
+        <PropertyRef Name="ClienteId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItensPedido_Pedido">
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="0..1" />
+    <End Role="ItensPedido" Type="Self.ItensPedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pedido">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ItensPedido">
+        <PropertyRef Name="PedidoId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItensPedido_Produto">
+    <End Role="Produto" Type="Self.Produto" Multiplicity="0..1" />
+    <End Role="ItensPedido" Type="Self.ItensPedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Produto">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ItensPedido">
+        <PropertyRef Name="ProdutoId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Produto_Marca">
+    <End Role="Marca" Type="Self.Marca" Multiplicity="0..1" />
+    <End Role="Produto" Type="Self.Produto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Marca">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Produto">
+        <PropertyRef Name="MarcaId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ControleVendasEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Cliente" EntityType="Self.Cliente" />
+    <EntitySet Name="ItensPedido" EntityType="Self.ItensPedido" />
+    <EntitySet Name="Marca" EntityType="Self.Marca" />
+    <EntitySet Name="Pedido" EntityType="Self.Pedido" />
+    <EntitySet Name="Produto" EntityType="Self.Produto" />
+    <AssociationSet Name="FK_Pedido_Cliente" Association="Self.FK_Pedido_Cliente">
+      <End Role="Cliente" EntitySet="Cliente" />
+      <End Role="Pedido" EntitySet="Pedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItensPedido_Pedido" Association="Self.FK_ItensPedido_Pedido">
+      <End Role="Pedido" EntitySet="Pedido" />
+      <End Role="ItensPedido" EntitySet="ItensPedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItensPedido_Produto" Association="Self.FK_ItensPedido_Produto">
+      <End Role="Produto" EntitySet="Produto" />
+      <End Role="ItensPedido" EntitySet="ItensPedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Produto_Marca" Association="Self.FK_Produto_Marca">
+      <End Role="Marca" EntitySet="Marca" />
+      <End Role="Produto" EntitySet="Produto" />
+    </AssociationSet>
+    <EntitySet Name="Observacao" EntityType="ControleVendasModel.Observacao" />
+  </EntityContainer>
+  <EntityType Name="Observacao">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Descricao" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Data" Type="DateTime" Precision="3" />
+    <Property Name="Tipo" Type="Byte" />
+    <Property Name="IdPrimary" Type="Int64" />
+  </EntityType>
+</Schema>

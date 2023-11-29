@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ControleVendasModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Cliente">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="varchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="ItensPedido">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PedidoId" Type="bigint" />
+    <Property Name="Situacao" Type="tinyint" />
+    <Property Name="ProdutoId" Type="bigint" />
+    <Property Name="Quantidade" Type="int" />
+    <Property Name="ValorTotal" Type="decimal" Precision="18" Scale="2" />
+  </EntityType>
+  <EntityType Name="Marca">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="varchar" MaxLength="50" />
+    <Property Name="PorcentagemComicao" Type="decimal" Precision="18" Scale="2" />
+  </EntityType>
+  <EntityType Name="Observacao">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Descricao" Type="varchar" MaxLength="200" />
+    <Property Name="Data" Type="datetime" />
+    <Property Name="Tipo" Type="tinyint" />
+    <Property Name="IdPrimary" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Pedido">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ClienteId" Type="bigint" />
+    <Property Name="Data" Type="datetime" />
+    <Property Name="Valor" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="Situacao" Type="tinyint" />
+    <Property Name="NumeroParcela" Type="tinyint" />
+    <Property Name="ValorTotalComicao" Type="decimal" Precision="18" Scale="2" />
+  </EntityType>
+  <EntityType Name="Produto">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Descricao" Type="varchar" MaxLength="50" />
+    <Property Name="CodigoProduto" Type="int" />
+    <Property Name="MarcaId" Type="bigint" />
+    <Property Name="ValorProduto" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="Tipo" Type="tinyint" />
+    <Property Name="Estoque" Type="int" />
+    <Property Name="ValorCompra" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="Observacao" Type="varchar" MaxLength="200" />
+    <Property Name="Imagem" Type="varbinary(max)" />
+  </EntityType>
+  <Association Name="FK_ItensPedido_Pedido">
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="0..1" />
+    <End Role="ItensPedido" Type="Self.ItensPedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pedido">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ItensPedido">
+        <PropertyRef Name="PedidoId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItensPedido_Produto">
+    <End Role="Produto" Type="Self.Produto" Multiplicity="0..1" />
+    <End Role="ItensPedido" Type="Self.ItensPedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Produto">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ItensPedido">
+        <PropertyRef Name="ProdutoId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Pedido_Cliente">
+    <End Role="Cliente" Type="Self.Cliente" Multiplicity="0..1" />
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cliente">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Pedido">
+        <PropertyRef Name="ClienteId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Produto_Marca">
+    <End Role="Marca" Type="Self.Marca" Multiplicity="0..1" />
+    <End Role="Produto" Type="Self.Produto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Marca">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Produto">
+        <PropertyRef Name="MarcaId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ControleVendasModelStoreContainer">
+    <EntitySet Name="Cliente" EntityType="Self.Cliente" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ItensPedido" EntityType="Self.ItensPedido" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Marca" EntityType="Self.Marca" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Observacao" EntityType="Self.Observacao" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Pedido" EntityType="Self.Pedido" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Produto" EntityType="Self.Produto" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_ItensPedido_Pedido" Association="Self.FK_ItensPedido_Pedido">
+      <End Role="Pedido" EntitySet="Pedido" />
+      <End Role="ItensPedido" EntitySet="ItensPedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItensPedido_Produto" Association="Self.FK_ItensPedido_Produto">
+      <End Role="Produto" EntitySet="Produto" />
+      <End Role="ItensPedido" EntitySet="ItensPedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Pedido_Cliente" Association="Self.FK_Pedido_Cliente">
+      <End Role="Cliente" EntitySet="Cliente" />
+      <End Role="Pedido" EntitySet="Pedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Produto_Marca" Association="Self.FK_Produto_Marca">
+      <End Role="Marca" EntitySet="Marca" />
+      <End Role="Produto" EntitySet="Produto" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
